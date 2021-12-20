@@ -1,3 +1,3 @@
-# MOEスマートコントラクト-Polygon Child Token v.1.0.0
+# MOE Polygon Child Token
 
 - truffleを使用します。
