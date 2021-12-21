@@ -120,6 +120,51 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
         rounds[roundId].totalDefenseAmount += amount;
     }
+
+    function resolveAttack(uint256 roundId, uint256 voteId) public {
+
+        Lib.Vote memory vote = attackVotes[roundId][voteId];
+        Lib.Round memory round = rounds[roundId];
+
+        require(_msgSender() == vote.voter, 'Access denied');
+
+        uint256 duration = block.timestamp - round.timestamp;
+
+        //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
+        require(duration > 60 * 60 * 24 * 1, 'Minimum duration is 1 days'); // dev
+
+        uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
+
+        if (round.totalAttackAmount > round.totalDefenseAmount) {
+            _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
+            attackVotes[roundId][voteId].voter = address(0);
+        } else {
+            attackVotes[roundId][voteId].voter = address(0);
+        }
+
+    }
+
+    function resolveDefense(uint256 roundId, uint256 voteId) public {
+
+        Lib.Vote memory vote = defenseVotes[roundId][voteId];
+        Lib.Round memory round = rounds[roundId];
+
+        require(_msgSender() == vote.voter, 'Access denied');
+
+        uint256 duration = block.timestamp - round.timestamp;
+
+        //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
+        require(duration > 60 * 60 * 24 * 1, 'Minimum duration is 1 days'); // dev
+
+        uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
+
+        if (round.totalAttackAmount < round.totalDefenseAmount) {
+            _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
+            defenseVotes[roundId][voteId].voter = address(0);
+        } else {
+            defenseVotes[roundId][voteId].voter = address(0);
+        }
+    }
     
     // Stake MOE
     function stake(uint256 id, uint256 amount) public {
