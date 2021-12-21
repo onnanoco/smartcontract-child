@@ -14,6 +14,8 @@ import "./Library.sol";
 // --------------
 // erase _mint() line on constructor function
 // change duration require() function on unstake()
+// change duration require() function on resolveAttack()
+// change duration require() function on resolveDefense()
 //
 contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
@@ -138,6 +140,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         if (round.totalAttackAmount > round.totalDefenseAmount) {
             _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
             attackVotes[roundId][voteId].voter = address(0);
+            onnanocos[round.onnanocoId].status = Lib.Status.DEPRECATED;
+
         } else {
             attackVotes[roundId][voteId].voter = address(0);
         }
@@ -161,6 +165,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         if (round.totalAttackAmount < round.totalDefenseAmount) {
             _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
             defenseVotes[roundId][voteId].voter = address(0);
+            onnanocos[round.onnanocoId].status = Lib.Status.NORMAL;
+
         } else {
             defenseVotes[roundId][voteId].voter = address(0);
         }
@@ -182,7 +188,9 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
     function unstake(uint256 stakeId) public {
 
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
-
+        
+        require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'Round is in dispute status');
+        
         uint256 duration = block.timestamp - stakeInfo.timestamp;
 
         //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
@@ -190,6 +198,10 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
         uint256 bonus = stakeInfo.amount * duration * 5 / (60 * 60 * 24 * 100 * 100);
 
+        if (onnanocos[stakeInfo.id].status == Lib.Status.DEPRECATED) {
+            bonus = 0;
+        }
+        
         _mint(_msgSender(), stakeInfo.amount + bonus);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
     }
