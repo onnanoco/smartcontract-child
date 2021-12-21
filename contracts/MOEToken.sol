@@ -133,7 +133,7 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         uint256 duration = block.timestamp - round.timestamp;
 
         //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
-        require(duration > 60 * 60 * 24 * 1, 'Minimum duration is 1 days'); // dev
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 days'); // dev
 
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
@@ -158,7 +158,7 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         uint256 duration = block.timestamp - round.timestamp;
 
         //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
-        require(duration > 60 * 60 * 24 * 1, 'Minimum duration is 1 days'); // dev
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 days'); // dev
 
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
@@ -194,14 +194,14 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         uint256 duration = block.timestamp - stakeInfo.timestamp;
 
         //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
-        require(duration > 60 * 60 * 24 * 1, 'Minimum duration is 100 days'); // Test
+        require(duration > 60 * 60 * 1, 'Minimum duration is 100 days'); // Test
 
         uint256 bonus = stakeInfo.amount * duration * 5 / (60 * 60 * 24 * 100 * 100);
 
         if (onnanocos[stakeInfo.id].status == Lib.Status.DEPRECATED) {
             bonus = 0;
         }
-        
+
         _mint(_msgSender(), stakeInfo.amount + bonus);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
     }
