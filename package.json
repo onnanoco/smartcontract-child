@@ -5,6 +5,8 @@
   "devDependencies": {
     "@maticnetwork/pos-portal": "^1.5.2",
     "@openzeppelin/contracts": "^4.4.1",
-    "@truffle/hdwallet-provider": "^2.0.0"
+    "@truffle/hdwallet-provider": "^2.0.0",
+    "truffle-export-abi": "^1.0.1",
+    "truffle-plugin-verify": "^0.5.20"
   }
 }
