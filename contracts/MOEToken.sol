@@ -57,8 +57,7 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
     // hash, hashFunction, hashSize: multihash
     // amount: defense amount
     function addOnnanoco(string memory name, bytes32 hash, bytes2 hashFunction, uint8 hashSize, uint256 amount) public {
-        //require(amount < balanceOf(_msgSender()), 'MOE: not enough MOE');
-
+  
         _burn(_msgSender(), amount);
 
         // add onnanoco base data
@@ -205,18 +204,6 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         _mint(_msgSender(), stakeInfo.amount + bonus);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
     }
-
-    /*
-    // get onnanoco info
-    function getOnnanoco(uint256 id) public view returns(Lib.Onnanoco memory) {
-        return onnanocos[id];
-    }
-
-    // get stake list
-    function getStakes() public view returns(Lib.Stake[] memory) {
-        return stakes[_msgSender()];
-    }
-    */
 
     // Polygon mapping : withdraw
     function withdraw(uint256 amount) external {
