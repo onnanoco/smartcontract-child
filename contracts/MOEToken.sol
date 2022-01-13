@@ -83,6 +83,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         require(amount > 0, 'Cannot vote with 0 MOE');
         require(onnanocos[id].status != Lib.Status.DEPRECATED, 'Deprecated');
 
+        // [TODO] check experation period
+
         uint256 roundId = onnanocos[id].roundId;
 
         uint256 totalDefenseAmount = rounds[roundId].totalDefenseAmount;
@@ -108,6 +110,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
         require(amount > 0, 'Cannot vote with 0 MOE');
         require(onnanocos[id].status == Lib.Status.IN_DISPUTE, 'Round is not in dispute');
+
+        // [TODO] check experation period
 
         uint256 roundId = onnanocos[id].roundId;
 
@@ -177,6 +181,7 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         require(amount > 0, 'Cannot stake 0 MOE');
         require(onnanocos[id].status == Lib.Status.NORMAL, 'Round is not in normal status');
 
+        // [TODO] if anybody close certatin round?
         _burn(_msgSender(), amount);
 
         stakes[_msgSender()].push(Lib.Stake(id, amount, block.timestamp));
