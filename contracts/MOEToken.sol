@@ -126,6 +126,30 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         rounds[roundId].totalDefenseAmount += amount;
     }
 
+    // clearRound
+    function clearRound(uint256 roundId) public {
+
+        Lib.Round memory round = rounds[roundId];
+        Lib.Onnanoco memory onnanoco = onnanocos[round.onnanocoId];
+
+        require(onnanoco.roundId == roundId, 'Invalid round id');
+
+        uint256 duration = block.timestamp - round.timestamp;
+
+        //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
+
+        if (round.totalAttackAmount > round.totalDefenseAmount) { // Attackers win
+            _mint(_msgSender(), round.totalAttackAmount / 100 * 2);
+            onnanocos[round.onnanocoId].status = Lib.Status.DEPRECATED;
+
+        } else if(round.totalAttackAmount < round.totalDefenseAmount) { // Attackeres lose
+            _mint(_msgSender(), round.totalDefenseAmount / 100 * 2);
+            onnanocos[round.onnanocoId].status = Lib.Status.NORMAL;
+        }
+        
+    }
+
     function resolveAttack(uint256 roundId, uint256 voteId) public {
 
         Lib.Vote memory vote = attackVotes[roundId][voteId];
@@ -136,14 +160,13 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         uint256 duration = block.timestamp - round.timestamp;
 
         //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
-        require(duration > 60 * 60 * 1, 'Minimum duration is 1 days'); // dev
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
 
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
         if (round.totalAttackAmount > round.totalDefenseAmount) {
             _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
             attackVotes[roundId][voteId].voter = address(0);
-            onnanocos[round.onnanocoId].status = Lib.Status.DEPRECATED;
 
         } else {
             attackVotes[roundId][voteId].voter = address(0);
@@ -168,7 +191,6 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         if (round.totalAttackAmount < round.totalDefenseAmount) {
             _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
             defenseVotes[roundId][voteId].voter = address(0);
-            onnanocos[round.onnanocoId].status = Lib.Status.NORMAL;
 
         } else {
             defenseVotes[roundId][voteId].voter = address(0);
