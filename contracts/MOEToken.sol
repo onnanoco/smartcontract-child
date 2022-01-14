@@ -13,7 +13,10 @@ import "./Library.sol";
 // BEFORE DEPLOY
 // --------------
 // erase _mint() line on constructor function
+// change duration require() function on voteForAttack()
+// change duration require() function on voteForDeffense()
 // change duration require() function on unstake()
+// change duration require() function on clearRound()
 // change duration require() function on resolveAttack()
 // change duration require() function on resolveDefense()
 //
@@ -35,22 +38,6 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
     mapping(address => Lib.Stake[]) public stakes;
 
     bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE"); // Polygon mapping
-
-    // Contstructor
-    constructor (string memory name, string memory symbol, address childChainManager) ERC20(name, symbol) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(DEPOSITOR_ROLE, childChainManager);
-        // test
-        _mint(_msgSender(), 10**18 * 100);
-    }
-
-    // Polygon mapping : deposit
-    function deposit(address user, bytes calldata depositData) external override {
-        require(hasRole(DEPOSITOR_ROLE, _msgSender()), "You're not allowed to deposit");
-        uint256 amount = abi.decode(depositData, (uint256));
-        _mint(user, amount);
-    }
-
 
     // Add onnanoco
     // name: name of the character
@@ -82,15 +69,19 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
         require(amount > 0, 'Cannot vote with 0 MOE');
         require(onnanocos[id].status != Lib.Status.DEPRECATED, 'Deprecated');
-
+        
         // [TODO] check experation period
 
         uint256 roundId = onnanocos[id].roundId;
 
-        uint256 totalDefenseAmount = rounds[roundId].totalDefenseAmount;
-        uint256 totalAttackAmount = rounds[roundId].totalAttackAmount;
+        Lib.Round memory round = rounds[roundId];
 
-        require(amount >= (2 * (totalDefenseAmount + totalAttackAmount)) - (3 * totalAttackAmount), 'Not enough MOE');
+        uint256 duration = block.timestamp - round.timestamp;
+
+        //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
+        
+        require(amount >= (2 * (round.totalDefenseAmount + round.totalAttackAmount)) - (3 * round.totalAttackAmount), 'Not enough MOE');
 
         _burn(_msgSender(), amount);
 
@@ -115,10 +106,14 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
 
         uint256 roundId = onnanocos[id].roundId;
 
-        uint256 totalDefenseAmount = rounds[roundId].totalDefenseAmount;
-        uint256 totalAttackAmount = rounds[roundId].totalAttackAmount;
+        Lib.Round memory round = rounds[roundId];
 
-        require(amount >= (2 * (totalDefenseAmount + totalAttackAmount)) - (3 * totalDefenseAmount), 'Not enough MOE');
+        uint256 duration = block.timestamp - round.timestamp;
+
+        //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
+
+        require(amount >= (2 * (round.totalDefenseAmount + round.totalAttackAmount)) - (3 * round.totalDefenseAmount), 'Not enough MOE');
 
         _burn(_msgSender(), amount);
         defenseVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
@@ -203,7 +198,6 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         require(amount > 0, 'Cannot stake 0 MOE');
         require(onnanocos[id].status == Lib.Status.NORMAL, 'Round is not in normal status');
 
-        // [TODO] if anybody close certatin round?
         _burn(_msgSender(), amount);
 
         stakes[_msgSender()].push(Lib.Stake(id, amount, block.timestamp));
@@ -232,8 +226,23 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
     }
 
+    // Polygon mapping : deposit
+    function deposit(address user, bytes calldata depositData) external override {
+        require(hasRole(DEPOSITOR_ROLE, _msgSender()), "You're not allowed to deposit");
+        uint256 amount = abi.decode(depositData, (uint256));
+        _mint(user, amount);
+    }
+
     // Polygon mapping : withdraw
     function withdraw(uint256 amount) external {
         _burn(_msgSender(), amount);
+    }
+
+    // Contstructor
+    constructor (string memory name, string memory symbol, address childChainManager) ERC20(name, symbol) {
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(DEPOSITOR_ROLE, childChainManager);
+        
+        _mint(_msgSender(), 10**18 * 100); // test
     }
 }
