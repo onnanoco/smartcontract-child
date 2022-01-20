@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.2;
+pragma solidity 0.6.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
-import "./IChildToken.sol";
 import "./Library.sol";
+import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20.sol";
+//import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20Proxy.sol";
 
 // *** IMPORTANT ***
 //
@@ -20,7 +17,7 @@ import "./Library.sol";
 // change duration require() function on resolveAttack()
 // change duration require() function on resolveDefense()
 //
-contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
+contract MOEToken is UchildERC20 {
 
     string public constant NAME = "MOE Token";
     string public constant SYMBOL = "MOE";
@@ -58,8 +55,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         defenseVotes[totalRounds].push(vote);
 
         // increase onnanoco index
-        totalOnnanocos++;
-        totalRounds++;
+        totalOnnanocos.add(1);
+        totalRounds.add(1);
     }
 
     // Vote for attack
@@ -118,7 +115,7 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         _burn(_msgSender(), amount);
         defenseVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
 
-        rounds[roundId].totalDefenseAmount += amount;
+        rounds[roundId].totalDefenseAmount.add(amount);
     }
 
     // clearRound
@@ -226,23 +223,8 @@ contract MOEToken is Context, AccessControlEnumerable, IChildToken, ERC20 {
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
     }
 
-    // Polygon mapping : deposit
-    function deposit(address user, bytes calldata depositData) external override {
-        require(hasRole(DEPOSITOR_ROLE, _msgSender()), "You're not allowed to deposit");
-        uint256 amount = abi.decode(depositData, (uint256));
-        _mint(user, amount);
-    }
-
-    // Polygon mapping : withdraw
-    function withdraw(uint256 amount) external {
-        _burn(_msgSender(), amount);
-    }
-
-    // Contstructor
-    constructor (string memory name, string memory symbol, address childChainManager) ERC20(name, symbol) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(DEPOSITOR_ROLE, childChainManager);
-        
+    // Initializer
+    function initialize(string memory name, string memory symbol, unit8 decimals, address childChainManager) public virtual initializer {
         _mint(_msgSender(), 10**18 * 100); // test
     }
 }
