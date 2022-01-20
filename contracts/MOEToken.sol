@@ -73,12 +73,12 @@ contract MOEToken is UchildERC20 {
 
         Lib.Round memory round = rounds[roundId];
 
-        uint256 duration = block.timestamp - round.timestamp;
+        uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
         
-        require(amount >= (2 * (round.totalDefenseAmount + round.totalAttackAmount)) - (3 * round.totalAttackAmount), 'Not enough MOE');
+        require(amount >= (round.totalDefenseAmount.add(round.totalAttackAmount).mul(2)).sub(round.totalAttackAmount.mul(3)), 'Not enough MOE');
 
         _burn(_msgSender(), amount);
 
@@ -105,12 +105,12 @@ contract MOEToken is UchildERC20 {
 
         Lib.Round memory round = rounds[roundId];
 
-        uint256 duration = block.timestamp - round.timestamp;
+        uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
 
-        require(amount >= (2 * (round.totalDefenseAmount + round.totalAttackAmount)) - (3 * round.totalDefenseAmount), 'Not enough MOE');
+        require(amount >= (round.totalDefenseAmount.add(round.totalAttackAmount).mul(2)).sub(round.totalDefenseAmount.mul(3)), 'Not enough MOE');
 
         _burn(_msgSender(), amount);
         defenseVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
@@ -126,17 +126,17 @@ contract MOEToken is UchildERC20 {
 
         require(onnanoco.roundId == roundId, 'Invalid round id');
 
-        uint256 duration = block.timestamp - round.timestamp;
+        uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 7, 'Minimum duration is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
 
         if (round.totalAttackAmount > round.totalDefenseAmount) { // Attackers win
-            _mint(_msgSender(), round.totalAttackAmount / 100 * 2);
+            _mint(_msgSender(), round.totalAttackAmount.div(50));
             onnanocos[round.onnanocoId].status = Lib.Status.DEPRECATED;
 
         } else if(round.totalAttackAmount < round.totalDefenseAmount) { // Attackeres lose
-            _mint(_msgSender(), round.totalDefenseAmount / 100 * 2);
+            _mint(_msgSender(), round.totalDefenseAmount.div(50));
             onnanocos[round.onnanocoId].status = Lib.Status.NORMAL;
         }
         
@@ -149,15 +149,15 @@ contract MOEToken is UchildERC20 {
 
         require(_msgSender() == vote.voter, 'Access denied');
 
-        uint256 duration = block.timestamp - round.timestamp;
+        uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 day'); // dev
 
-        uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
+        uint256 totalAmount = round.totalAttackAmount.add(round.totalDefenseAmount);
 
         if (round.totalAttackAmount > round.totalDefenseAmount) {
-            _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
+            _mint(_msgSender(), totalAmount.mul(vote.amount).div(round.totalAttackAmount));
             attackVotes[roundId][voteId].voter = address(0);
 
         } else {
@@ -173,15 +173,15 @@ contract MOEToken is UchildERC20 {
 
         require(_msgSender() == vote.voter, 'Access denied');
 
-        uint256 duration = block.timestamp - round.timestamp;
+        uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 24 * 7, 'Minimum duration is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 days'); // dev
 
-        uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
+        uint256 totalAmount = round.totalAttackAmount.add(round.totalDefenseAmount);
 
         if (round.totalAttackAmount < round.totalDefenseAmount) {
-            _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
+            _mint(_msgSender(), totalAmount.mul(vote.amount).div(round.totalDefenseAmount));
             defenseVotes[roundId][voteId].voter = address(0);
 
         } else {
@@ -198,7 +198,7 @@ contract MOEToken is UchildERC20 {
         _burn(_msgSender(), amount);
 
         stakes[_msgSender()].push(Lib.Stake(id, amount, block.timestamp));
-        onnanocos[id].totalStakingAmount += amount;
+        onnanocos[id].totalStakingAmount.add(amount);
     }
     
     // Unstake MOE
@@ -213,14 +213,14 @@ contract MOEToken is UchildERC20 {
         //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 100 days'); // Test
 
-        uint256 bonus = stakeInfo.amount * duration * 5 / (60 * 60 * 24 * 100 * 100);
+        uint256 bonus = stakeInfo.amount.mul(duration * 5).div(60 * 60 * 24 * 100 * 100);
 
         if (onnanocos[stakeInfo.id].status == Lib.Status.DEPRECATED) {
             bonus = 0;
         }
 
-        _mint(_msgSender(), stakeInfo.amount + bonus);
-        onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
+        _mint(_msgSender(), stakeInfo.amount.add(bonus));
+        onnanocos[stakeInfo.id].totalStakingAmount.sub(stakeInfo.amount);
     }
 
     // Initializer
