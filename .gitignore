@@ -1,8 +1,6 @@
 .DS_Store
 .vscode
-.openzeppelin
 .secret
-build
 node_modules
 test
 truffle-config.js
