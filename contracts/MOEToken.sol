@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.6;
+pragma solidity ^0.6.0;
 
 import "./Library.sol";
 import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20.sol";
