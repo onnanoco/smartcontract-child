@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+pragma experimental ABIEncoderV2;
 pragma solidity ^0.6.0;
 
 import "./Library.sol";
@@ -17,7 +18,7 @@ import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC2
 // change duration require() function on resolveAttack()
 // change duration require() function on resolveDefense()
 //
-contract MOEToken is UchildERC20 {
+contract MOEToken is UChildERC20 {
 
     //string public constant NAME = "MOE Token";
     //string public constant SYMBOL = "MOE";
@@ -34,7 +35,7 @@ contract MOEToken is UchildERC20 {
 
     mapping(address => Lib.Stake[]) public stakes;
 
-    bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE"); // Polygon mapping
+    //bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE"); // Polygon mapping
 
     function addOnnanoco(string memory name, bytes32 hash, bytes2 hashFunction, uint8 hashSize, uint256 amount) public {
   
@@ -47,7 +48,7 @@ contract MOEToken is UchildERC20 {
         rounds[totalRounds] = Lib.Round(totalOnnanocos, amount, 0, 0);
 
         // vote for defense
-        Lib.Vote vote = Lib.Vote(totalOnnanocos, _msgSender(), amount, block.timestamp);
+        Lib.Vote memory vote = Lib.Vote(totalOnnanocos, _msgSender(), amount, block.timestamp);
         defenseVotes[totalRounds].push(vote);
 
         // increase onnanoco index
@@ -81,8 +82,12 @@ contract MOEToken is UchildERC20 {
 
         _burn(_msgSender(), amount);
 
+        uint256 roundId = onnanocos[id].roundId;
+
         // 1st attack
         if (onnanocos[id].status == Lib.Status.NORMAL) {
+
+            Lib.Round memory round = rounds[roundId];
 
             uint256 duration = block.timestamp.sub(round.timestamp);
             //require(duration < 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
@@ -117,12 +122,15 @@ contract MOEToken is UchildERC20 {
         require(amount > 0, 'Cannot vote with 0 MOE');
         require(onnanocos[id].status == Lib.Status.IN_DISPUTE, 'Round is not in dispute');
 
+        uint256 roundId = onnanocos[id].roundId;
+        Lib.Round memory round = rounds[roundId];
+
+        uint256 minimumAmount = ((round.totalDefenseAmount.add(round.totalAttackAmount)).mul(2)).sub(round.totalDefenseAmount.mul(3));
+
         uint256 duration = block.timestamp.sub(round.timestamp);
 
         //require(duration > 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
         require(duration > 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
-
-        uint256 minimumAmount = getMinimumDefenseAmount(id);
 
         require(amount >= minimumAmount, 'Less then MIN defense amount');
         
@@ -159,7 +167,7 @@ contract MOEToken is UchildERC20 {
 
             Lib.Vote memory vote = defenseVotes[roundId][0];
 
-            Lib.Vote newVote = Lib.Vote(round.onnanocoId, vote.voter, vote.amount, block.timestamp);
+            Lib.Vote memory newVote = Lib.Vote(round.onnanocoId, vote.voter, vote.amount, block.timestamp);
             defenseVotes[totalRounds].push(newVote);
 
             totalRounds.add(1);
@@ -249,8 +257,8 @@ contract MOEToken is UchildERC20 {
         onnanocos[stakeInfo.id].totalStakingAmount.sub(stakeInfo.amount);
     }
 
-    // Initializer
-    function initialize(string memory name, string memory symbol, unit8 decimals, address childChainManager) public virtual initializer {
-        _mint(_msgSender(), 10**18 * 100); // test
+    // Test faucet
+    function mintToken(uint256 amount) public {
+        _mint(_msgSender(), amount);
     }
 }
