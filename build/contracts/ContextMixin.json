@@ -1,7 +1,7 @@
 {
   "contractName": "ContextMixin",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"@maticnetwork/pos-portal/contracts/common/ContextMixin.sol\":\"ContextMixin\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1500},\"remappings\":[]},\"sources\":{\"@maticnetwork/pos-portal/contracts/common/ContextMixin.sol\":{\"keccak256\":\"0xb9c8d90444f3cb8aeadd6c400d42c777068be5d46cb74f28313508284b224b34\",\"urls\":[\"bzz-raw://c06381d18a5e74416d316cc5348585286ce31a716cef696b9637f9bc76a311af\",\"dweb:/ipfs/QmS3o5Th8XnUZY1fobXS8CRofnYfWaqfYSRWSPvsWT1dXB\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"@maticnetwork/pos-portal/contracts/common/ContextMixin.sol\":\"ContextMixin\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@maticnetwork/pos-portal/contracts/common/ContextMixin.sol\":{\"keccak256\":\"0xb9c8d90444f3cb8aeadd6c400d42c777068be5d46cb74f28313508284b224b34\",\"urls\":[\"bzz-raw://c06381d18a5e74416d316cc5348585286ce31a716cef696b9637f9bc76a311af\",\"dweb:/ipfs/QmS3o5Th8XnUZY1fobXS8CRofnYfWaqfYSRWSPvsWT1dXB\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -1122,7 +1122,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-01-22T00:45:54.153Z",
+  "updatedAt": "2022-01-23T06:22:11.232Z",
   "devdoc": {
     "methods": {}
   },

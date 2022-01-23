@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma experimental ABIEncoderV2;
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.2;
 
 import "./Library.sol";
-import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20.sol";
+import "./IMOEToken.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+
+//import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20.sol";
+//import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
+//import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 //import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC20/UChildERC20Proxy.sol";
 
 // *** IMPORTANT ***
@@ -18,11 +24,13 @@ import "@maticnetwork/pos-portal/contracts/child/ChildToken/UpgradeableChildERC2
 // change duration require() function on resolveAttack()
 // change duration require() function on resolveDefense()
 //
-contract MOEToken is UChildERC20 {
+contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMOEToken, ERC20Upgradeable {
 
     //string public constant NAME = "MOE Token";
     //string public constant SYMBOL = "MOE";
     //uint8 public constant DECIMALS = 18;
+
+    bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE"); // Polygon mapping
 
     mapping(uint256 => Lib.Onnanoco) public onnanocos;
     mapping(uint256 => Lib.Round) public rounds;
@@ -52,8 +60,8 @@ contract MOEToken is UChildERC20 {
         defenseVotes[totalRounds].push(vote);
 
         // increase onnanoco index
-        totalOnnanocos.add(1);
-        totalRounds.add(1);
+        totalOnnanocos++;
+        totalRounds++;
     }
 
     // Get minimum attack amount
@@ -255,6 +263,22 @@ contract MOEToken is UChildERC20 {
 
         _mint(_msgSender(), stakeInfo.amount.add(bonus));
         onnanocos[stakeInfo.id].totalStakingAmount.sub(stakeInfo.amount);
+    }
+
+    // Polygon mapping : deposit
+    function deposit(address user, bytes calldata depositData) external override {
+        require(hasRole(DEPOSITOR_ROLE, _msgSender()), "You're not allowed to deposit");
+        uint256 amount = abi.decode(depositData, (uint256));
+        _mint(user, amount);
+    }
+
+    // Polygon mapping : withdraw
+    function withdraw(uint256 amount) external {
+        _burn(_msgSender(), amount);
+    }
+
+    function initialize(string memory name, string memory symbol, uint256 decimals, address childchangeProxy) public virtual initializer {
+    
     }
 
     // Test faucet

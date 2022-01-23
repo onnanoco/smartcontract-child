@@ -3,8 +3,7 @@
     "truffle": "^5.4.25"
   },
   "devDependencies": {
-    "@maticnetwork/pos-portal": "^1.5.2",
-    "@openzeppelin/contracts": "^3.1.0",
+    "@openzeppelin/contracts-upgradeable": "^4.4.2",
     "@openzeppelin/truffle-upgrades": "^1.12.0",
     "@truffle/hdwallet-provider": "^2.0.0",
     "truffle-export-abi": "^1.0.1",
