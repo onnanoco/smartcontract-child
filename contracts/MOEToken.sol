@@ -11,19 +11,15 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 //
 // BEFORE DEPLOY
 // --------------
-// erase _mint() line on constructor function
+// erase _mint() line on initialize()
 // change duration require() function on voteForAttack()
 // change duration require() function on voteForDeffense()
 // change duration require() function on unstake()
 // change duration require() function on clearRound()
 // change duration require() function on resolveAttack()
 // change duration require() function on resolveDefense()
-//
-contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMOEToken, ERC20Upgradeable {
 
-    //string public constant NAME = "MOE Token";
-    //string public constant SYMBOL = "MOE";
-    //uint8 public constant DECIMALS = 18;
+contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMOEToken, ERC20Upgradeable {
 
     bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE"); // Polygon mapping
 
@@ -269,12 +265,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         _burn(_msgSender(), amount);
     }
 
-    function initialize(string memory name, string memory symbol, uint256 decimals, address childchangeProxy) public virtual initializer {
-    
-    }
+    // Initializer
+    function initialize(string memory name, string memory symbol, address childchangeProxy) public virtual initializer {
+        
+        __ERC20_init(name, symbol);
+        _setupRole(DEPOSITOR_ROLE, childchangeProxy);
 
-    // Test faucet
-    function mintToken(uint256 amount) public {
-        _mint(_msgSender(), amount);
+        _mint(_msgSender(), 10 ** 18 * 100); // dev faucet
     }
 }
