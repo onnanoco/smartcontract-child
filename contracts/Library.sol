@@ -11,7 +11,6 @@ library Lib {
         uint8 size;
     }
     
-    // [TODO] Optimize gas cost
     struct Onnanoco {
         string name;
         address owner;
