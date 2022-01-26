@@ -5,4 +5,3 @@
 .infura_mumbai_rpc
 node_modules
 test
-truffle-config.js
