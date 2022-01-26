@@ -20,7 +20,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.2+commit.661d1103\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"depositData\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/IMOEToken.sol\":\"IMOEToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1500},\"remappings\":[]},\"sources\":{\"project:/contracts/IMOEToken.sol\":{\"keccak256\":\"0xf35f3399b6446eea17bf5529f3b5c682af5affd62e458d6aa258a3b306d363dc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://995e9eae66383add1fee212e8cba76a4f9bb85f636ab833205bfd99ec0f91765\",\"dweb:/ipfs/QmWfyktkmVrCcWgbHeXXLB1mR1X2AsxChondcdbvKMMRjc\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.2+commit.661d1103\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"depositData\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/IMOEToken.sol\":\"IMOEToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/IMOEToken.sol\":{\"keccak256\":\"0xbe2cc1548b4d5040b0cbba5f3354213eb9173c46acc0b0bd63a850eb18733e77\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://81480bd7436c081fbf86e05fb49c83750fd5c4ffef667c172989f13d2a7594e2\",\"dweb:/ipfs/QmTKCkkfN2qbD8yjyRxtQ3AkrK8TzRsXzgiycLWqsYGk4L\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -28,7 +28,7 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.2;\n\ninterface IMOEToken {\n    function deposit(address user, bytes calldata depositData) external;\n}",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.2;\n\ninterface IMOEToken {\n    function deposit(address user, bytes calldata depositData) external;\n}",
   "sourcePath": "/Users/misskiwi/github/smartcontract-child/contracts/IMOEToken.sol",
   "ast": {
     "absolutePath": "project:/contracts/IMOEToken.sol",
@@ -45,11 +45,12 @@
         "id": 2491,
         "literals": [
           "solidity",
+          "^",
           "0.8",
           ".2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:22:14"
+        "src": "32:23:14"
       },
       {
         "abstract": false,
@@ -62,7 +63,7 @@
           2499
         ],
         "name": "IMOEToken",
-        "nameLocation": "66:9:14",
+        "nameLocation": "67:9:14",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -72,7 +73,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "deposit",
-            "nameLocation": "91:7:14",
+            "nameLocation": "92:7:14",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 2496,
@@ -83,10 +84,10 @@
                   "id": 2493,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "107:4:14",
+                  "nameLocation": "108:4:14",
                   "nodeType": "VariableDeclaration",
                   "scope": 2498,
-                  "src": "99:12:14",
+                  "src": "100:12:14",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -97,7 +98,7 @@
                     "id": 2492,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "99:7:14",
+                    "src": "100:7:14",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -111,10 +112,10 @@
                   "id": 2495,
                   "mutability": "mutable",
                   "name": "depositData",
-                  "nameLocation": "128:11:14",
+                  "nameLocation": "129:11:14",
                   "nodeType": "VariableDeclaration",
                   "scope": 2498,
-                  "src": "113:26:14",
+                  "src": "114:26:14",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -125,7 +126,7 @@
                     "id": 2494,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "113:5:14",
+                    "src": "114:5:14",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -134,26 +135,26 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "98:42:14"
+              "src": "99:42:14"
             },
             "returnParameters": {
               "id": 2497,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "149:0:14"
+              "src": "150:0:14"
             },
             "scope": 2499,
-            "src": "82:68:14",
+            "src": "83:68:14",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
         "scope": 2500,
-        "src": "56:96:14"
+        "src": "57:96:14"
       }
     ],
-    "src": "32:120:14"
+    "src": "32:121:14"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/IMOEToken.sol",
@@ -170,11 +171,12 @@
         "id": 2491,
         "literals": [
           "solidity",
+          "^",
           "0.8",
           ".2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:22:14"
+        "src": "32:23:14"
       },
       {
         "abstract": false,
@@ -187,7 +189,7 @@
           2499
         ],
         "name": "IMOEToken",
-        "nameLocation": "66:9:14",
+        "nameLocation": "67:9:14",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -197,7 +199,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "deposit",
-            "nameLocation": "91:7:14",
+            "nameLocation": "92:7:14",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 2496,
@@ -208,10 +210,10 @@
                   "id": 2493,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "107:4:14",
+                  "nameLocation": "108:4:14",
                   "nodeType": "VariableDeclaration",
                   "scope": 2498,
-                  "src": "99:12:14",
+                  "src": "100:12:14",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -222,7 +224,7 @@
                     "id": 2492,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "99:7:14",
+                    "src": "100:7:14",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -236,10 +238,10 @@
                   "id": 2495,
                   "mutability": "mutable",
                   "name": "depositData",
-                  "nameLocation": "128:11:14",
+                  "nameLocation": "129:11:14",
                   "nodeType": "VariableDeclaration",
                   "scope": 2498,
-                  "src": "113:26:14",
+                  "src": "114:26:14",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
@@ -250,7 +252,7 @@
                     "id": 2494,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
-                    "src": "113:5:14",
+                    "src": "114:5:14",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -259,26 +261,26 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "98:42:14"
+              "src": "99:42:14"
             },
             "returnParameters": {
               "id": 2497,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "149:0:14"
+              "src": "150:0:14"
             },
             "scope": 2499,
-            "src": "82:68:14",
+            "src": "83:68:14",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
         "scope": 2500,
-        "src": "56:96:14"
+        "src": "57:96:14"
       }
     ],
-    "src": "32:120:14"
+    "src": "32:121:14"
   },
   "compiler": {
     "name": "solc",
@@ -286,7 +288,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-01-24T00:30:21.800Z",
+  "updatedAt": "2022-01-26T20:46:37.978Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
