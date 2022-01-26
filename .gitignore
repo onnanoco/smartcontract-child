@@ -1,6 +1,8 @@
 .DS_Store
 .vscode
 .secret
+.infura_polygon_key
+.infura_mumbai_key
 node_modules
 test
 truffle-config.js
