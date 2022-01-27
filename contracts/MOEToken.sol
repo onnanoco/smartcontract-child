@@ -42,7 +42,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         onnanocos[totalOnnanocos] = Lib.Onnanoco(name, _msgSender(), Lib.Multihash(hash, hashFunction, hashSize), Lib.Status.NORMAL, block.timestamp, 0, totalRounds);
 
         // setup round
-        rounds[totalRounds] = Lib.Round(totalOnnanocos, amount, 0, 0);
+        rounds[totalRounds] = Lib.Round(totalOnnanocos, amount, 0, 0, 1);
 
         // vote for defense
         Lib.Vote memory vote = Lib.Vote(totalOnnanocos, _msgSender(), amount, block.timestamp);
@@ -97,6 +97,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         attackVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
         rounds[roundId].totalAttackAmount += amount;
+        rounds[roundId].totalVotes++;
     }
 
     // Get minimum defense amount
@@ -137,6 +138,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         defenseVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
 
         rounds[roundId].totalDefenseAmount += amount;
+        rounds[roundId].totalVotes++;
     }
 
     // clearRound
@@ -162,7 +164,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             onnanoco.status = Lib.Status.NORMAL;
 
             // new round
-            rounds[totalRounds] = Lib.Round(round.onnanocoId, 0, 0, 0);
+            rounds[totalRounds] = Lib.Round(round.onnanocoId, 0, 0, 0, 0);
 
             Lib.Vote memory vote = defenseVotes[roundId][0];
 
@@ -189,8 +191,17 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
         if (round.totalAttackAmount > round.totalDefenseAmount) {
-            _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
+            
             attackVotes[roundId][voteId].voter = address(0);
+
+            if (voteId > 0) { 
+                _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
+                
+            } else { // Change 1st atttacker to next defender
+
+                rounds[roundId].totalVotes++;
+                // [TODO]
+            }
 
         } else {
             attackVotes[roundId][voteId].voter = address(0);
@@ -212,10 +223,18 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
-        if (round.totalAttackAmount < round.totalDefenseAmount && voteId > 0) {
-
-            _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
+        if (round.totalAttackAmount < round.totalDefenseAmount) {
             defenseVotes[roundId][voteId].voter = address(0);
+
+            if (voteId > 0) {
+
+                _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
+
+            } else { // Next defender is previous defender
+
+                rounds[roundId].totalVotes++;
+                // [TODO]
+            }
 
         } else {
             defenseVotes[roundId][voteId].voter = address(0);

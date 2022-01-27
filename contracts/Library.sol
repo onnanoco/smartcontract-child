@@ -26,6 +26,7 @@ library Lib {
         uint256 totalDefenseAmount;
         uint256 totalAttackAmount;
         uint256 timestamp;
+        uint256 totalVotes;
     }
 
     struct Vote {
