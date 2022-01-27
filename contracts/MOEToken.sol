@@ -128,8 +128,8 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         uint256 duration = block.timestamp - round.timestamp;
 
-        //require(duration > 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
-        require(duration > 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
+        //require(duration < 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
+        require(duration < 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
 
         require(amount >= minimumAmount, 'Less then MIN defense amount');
         
