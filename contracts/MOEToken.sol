@@ -83,15 +83,16 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         // 1st attack
         if (onnanocos[id].status == Lib.Status.NORMAL) {
 
+            onnanocos[id].status = Lib.Status.IN_DISPUTE;
+            rounds[roundId].timestamp = block.timestamp;
+
+        } else {
+            
             Lib.Round memory round = rounds[roundId];
 
             uint256 duration = block.timestamp - round.timestamp;
             //require(duration < 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
             require(duration < 60 * 60, 'Dispute window is 1 hour'); // dev
-
-            onnanocos[id].status = Lib.Status.IN_DISPUTE;
-        } else {
-            rounds[roundId].timestamp = block.timestamp;
         }
 
         attackVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
@@ -101,6 +102,8 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     // Get minimum defense amount
     // id : id of the character
     function getMinimumDefenseAmount(uint256 id) public view returns (uint256 amount) {
+
+        require(onnanocos[id].status == Lib.Status.IN_DISPUTE, 'Round is not in dispute');
 
         uint256 roundId = onnanocos[id].roundId;
         Lib.Round memory round = rounds[roundId];
