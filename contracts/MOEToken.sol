@@ -233,7 +233,6 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         defenseVotes[roundId][voteId].voter = address(0);
     }
     
-    // Stake MOE
     function stake(uint256 id, uint256 amount) public {
     
         require(amount > 0, 'Cannot stake 0 MOE');
@@ -245,7 +244,6 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         onnanocos[id].totalStakingAmount += amount;
     }
     
-    // Unstake MOE
     function unstake(uint256 stakeId) public {
 
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
@@ -254,17 +252,71 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         
         uint256 duration = block.timestamp - stakeInfo.timestamp;
 
-        //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
+        //require(duration > 60 * 60 * 24 * 50, 'Minimum duration is 50 days'); // Deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
 
-        uint256 bonus = stakeInfo.amount * duration / (60 * 60 * 24 * 100 * 20);
+        uint256 reward = stakeInfo.amount * duration / (60 * 60 * 24 * 50);
 
         if (onnanocos[stakeInfo.id].status == Lib.Status.DEPRECATED) {
-            bonus = 0;
+            reward = 0;
         }
 
-        _mint(_msgSender(), stakeInfo.amount + bonus);
+        _mint(_msgSender(), stakeInfo.amount + reward);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
+    }
+
+    function getStakeRewardAmount(uint256 stakeId) public view returns(uint256) {
+
+        Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
+
+        require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'Round is in dispute status');
+
+        uint256 duration = block.timestamp - stakeInfo.timestamp;
+
+        uint256 reward = stakeInfo.amount * duration / (60 * 60 * 24 * 100);
+
+        if (onnanocos[stakeInfo.id].status == Lib.Status.DEPRECATED) {
+            reward = 0;
+        }
+
+        return reward;
+    }
+
+    function receiveStakeReward(uint256 stakeId) public {
+
+        uint256 reward = getStakeRewardAmount(stakeId);
+
+        stakes[_msgSender()][stakeId].timestamp = block.timestamp;
+        _mint(_msgSender(), reward);
+    }
+
+    function getOwnerRewardAmount(uint256 id) public view returns(uint256){
+
+        Lib.Onnanoco memory onnanocoInfo = onnanocos[id];
+
+        require(onnanocoInfo.status == Lib.Status.NORMAL, 'Round is not in normal status');
+
+        Lib.Vote memory voteInfo = defenseVotes[onnanocoInfo.roundId][0];
+
+        uint256 duration = block.timestamp - voteInfo.timestamp;
+
+        uint256 reward = voteInfo.amount * duration / (60 * 60 * 24 * 50);
+
+        if (onnanocoInfo.status == Lib.Status.DEPRECATED) {
+            reward = 0;
+        }
+
+        return reward;
+    }
+
+    function receiveOwnerReward(uint256 id) public {
+        
+        require(defenseVotes[onnanocos[id].roundId][0].voter == _msgSender(), 'Permission denied');
+
+        uint256 reward = getOwnerRewardAmount(id);
+
+        _mint(_msgSender(), reward);
+        defenseVotes[onnanocos[id].roundId][0].timestamp = block.timestamp;
     }
 
     // Polygon mapping : deposit
