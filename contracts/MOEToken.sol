@@ -68,6 +68,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         return minimumAmount;
     }
 
+    // [TODO] error
     function voteForAttack(uint256 id, uint256 amount) public {
 
         require(id < totalOnnanocos, 'Invalid id');
