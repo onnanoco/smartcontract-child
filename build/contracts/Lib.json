@@ -1,24 +1,24 @@
 {
   "contractName": "Lib",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.2+commit.661d1103\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Library.sol\":\"Lib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Library.sol\":{\"keccak256\":\"0x451693a5ca3e1b0c890aee9f400cede543ef8a4477b3d7b64458c5d0cf11c220\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4446c9d8dee9eb2ac87d065625725760fb3f90276e982b194c63ca5825e53a98\",\"dweb:/ipfs/QmTgtfxxHCaHqJn31rJTs7Qtx8ThSzceRW5P29PKuVYakU\"]}},\"version\":1}",
-  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a56c3f97f662fcbd9f0d5c689585a8b07a25957299bf4c94cbb21312f978fef764736f6c63430008020033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a56c3f97f662fcbd9f0d5c689585a8b07a25957299bf4c94cbb21312f978fef764736f6c63430008020033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.2+commit.661d1103\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Library.sol\":\"Lib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Library.sol\":{\"keccak256\":\"0x8331601fef7b16e0cec23982a37888cd289fae416fe069c853c181d5fa24e055\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://163f53d0afa80acb7ad97af6bc52970eab192cf7495c176a425062d197675c93\",\"dweb:/ipfs/QmVvPVsg46Axhst7RzA4aXYDigumZtW2Tvtv42Uf1CRVip\"]}},\"version\":1}",
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122015080531cb7c2dd5c0f1302655ccc54516d059ed8f6b9c07475e9b841452e99f64736f6c63430008020033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122015080531cb7c2dd5c0f1302655ccc54516d059ed8f6b9c07475e9b841452e99f64736f6c63430008020033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
-  "sourceMap": "57:758:15:-:0;;;;;;;;;;;;;;;-1:-1:-1;;;57:758:15;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "57:758:15:-:0;;;;;;;;",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.2;\n\nlibrary Lib {\n\n    enum Status { NORMAL, IN_DISPUTE, DEPRECATED }\n\n    struct Multihash {\n        bytes32 hash;\n        bytes2 hashFunction;\n        uint8 size;\n    }\n    \n    struct Onnanoco {\n        string name;\n        address owner;\n        Multihash multihash;\n        Status status;\n        uint256 timestamp;\n        uint256 totalStakingAmount;\n        uint256 roundId;\n    }\n\n    struct Round {\n        uint256 onnanocoId;\n        uint256 totalDefenseAmount;\n        uint256 totalAttackAmount;\n        uint256 timestamp;\n    }\n\n    struct Vote {\n        uint256 id;\n        address voter;\n        uint256 amount;\n        uint256 timestamp;\n    }\n\n    struct Stake {\n        uint256 id;\n        uint256 amount;\n        uint256 timestamp;\n    }\n    \n}",
+  "sourceMap": "57:786:15:-:0;;;;;;;;;;;;;;;-1:-1:-1;;;57:786:15;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "57:786:15:-:0;;;;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.2;\n\nlibrary Lib {\n\n    enum Status { NORMAL, IN_DISPUTE, DEPRECATED }\n\n    struct Multihash {\n        bytes32 hash;\n        bytes2 hashFunction;\n        uint8 size;\n    }\n    \n    struct Onnanoco {\n        string name;\n        address owner;\n        Multihash multihash;\n        Status status;\n        uint256 timestamp;\n        uint256 totalStakingAmount;\n        uint256 roundId;\n    }\n\n    struct Round {\n        uint256 onnanocoId;\n        uint256 totalDefenseAmount;\n        uint256 totalAttackAmount;\n        uint256 timestamp;\n        uint256 totalVotes;\n    }\n\n    struct Vote {\n        uint256 id;\n        address voter;\n        uint256 amount;\n        uint256 timestamp;\n    }\n\n    struct Stake {\n        uint256 id;\n        uint256 amount;\n        uint256 timestamp;\n    }\n    \n}",
   "sourcePath": "/Users/misskiwi/github/smartcontract-child/contracts/Library.sol",
   "ast": {
     "absolutePath": "project:/contracts/Library.sol",
     "exportedSymbols": {
       "Lib": [
-        2555
+        2557
       ]
     },
-    "id": 2556,
+    "id": 2558,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -39,9 +39,9 @@
         "contractDependencies": [],
         "contractKind": "library",
         "fullyImplemented": true,
-        "id": 2555,
+        "id": 2557,
         "linearizedBaseContracts": [
-          2555
+          2557
         ],
         "name": "Lib",
         "nameLocation": "65:3:15",
@@ -167,7 +167,7 @@
             "name": "Multihash",
             "nameLocation": "135:9:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
+            "scope": 2557,
             "src": "128:95:15",
             "visibility": "public"
           },
@@ -383,13 +383,13 @@
             "name": "Onnanoco",
             "nameLocation": "240:8:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
+            "scope": 2557,
             "src": "233:207:15",
             "visibility": "public"
           },
           {
             "canonicalName": "Lib.Round",
-            "id": 2538,
+            "id": 2540,
             "members": [
               {
                 "constant": false,
@@ -398,7 +398,7 @@
                 "name": "onnanocoId",
                 "nameLocation": "477:10:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "469:18:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -425,7 +425,7 @@
                 "name": "totalDefenseAmount",
                 "nameLocation": "505:18:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "497:26:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -452,7 +452,7 @@
                 "name": "totalAttackAmount",
                 "nameLocation": "541:17:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "533:25:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -479,7 +479,7 @@
                 "name": "timestamp",
                 "nameLocation": "576:9:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "568:17:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -498,28 +498,16 @@
                   }
                 },
                 "visibility": "internal"
-              }
-            ],
-            "name": "Round",
-            "nameLocation": "453:5:15",
-            "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "446:146:15",
-            "visibility": "public"
-          },
-          {
-            "canonicalName": "Lib.Vote",
-            "id": 2547,
-            "members": [
+              },
               {
                 "constant": false,
-                "id": 2540,
+                "id": 2539,
                 "mutability": "mutable",
-                "name": "id",
-                "nameLocation": "628:2:15",
+                "name": "totalVotes",
+                "nameLocation": "603:10:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "620:10:15",
+                "scope": 2540,
+                "src": "595:18:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -527,10 +515,49 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2539,
+                  "id": 2538,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "620:7:15",
+                  "src": "595:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Round",
+            "nameLocation": "453:5:15",
+            "nodeType": "StructDefinition",
+            "scope": 2557,
+            "src": "446:174:15",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Lib.Vote",
+            "id": 2549,
+            "members": [
+              {
+                "constant": false,
+                "id": 2542,
+                "mutability": "mutable",
+                "name": "id",
+                "nameLocation": "656:2:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2549,
+                "src": "648:10:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2541,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "648:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -540,13 +567,13 @@
               },
               {
                 "constant": false,
-                "id": 2542,
+                "id": 2544,
                 "mutability": "mutable",
                 "name": "voter",
-                "nameLocation": "648:5:15",
+                "nameLocation": "676:5:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "640:13:15",
+                "scope": 2549,
+                "src": "668:13:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -554,10 +581,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2541,
+                  "id": 2543,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "640:7:15",
+                  "src": "668:7:15",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -568,40 +595,13 @@
               },
               {
                 "constant": false,
-                "id": 2544,
-                "mutability": "mutable",
-                "name": "amount",
-                "nameLocation": "671:6:15",
-                "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "663:14:15",
-                "stateVariable": false,
-                "storageLocation": "default",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_uint256",
-                  "typeString": "uint256"
-                },
-                "typeName": {
-                  "id": 2543,
-                  "name": "uint256",
-                  "nodeType": "ElementaryTypeName",
-                  "src": "663:7:15",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  }
-                },
-                "visibility": "internal"
-              },
-              {
-                "constant": false,
                 "id": 2546,
                 "mutability": "mutable",
-                "name": "timestamp",
-                "nameLocation": "695:9:15",
+                "name": "amount",
+                "nameLocation": "699:6:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "687:17:15",
+                "scope": 2549,
+                "src": "691:14:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -612,46 +612,7 @@
                   "id": 2545,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "687:7:15",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  }
-                },
-                "visibility": "internal"
-              }
-            ],
-            "name": "Vote",
-            "nameLocation": "605:4:15",
-            "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "598:113:15",
-            "visibility": "public"
-          },
-          {
-            "canonicalName": "Lib.Stake",
-            "id": 2554,
-            "members": [
-              {
-                "constant": false,
-                "id": 2549,
-                "mutability": "mutable",
-                "name": "id",
-                "nameLocation": "748:2:15",
-                "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "740:10:15",
-                "stateVariable": false,
-                "storageLocation": "default",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_uint256",
-                  "typeString": "uint256"
-                },
-                "typeName": {
-                  "id": 2548,
-                  "name": "uint256",
-                  "nodeType": "ElementaryTypeName",
-                  "src": "740:7:15",
+                  "src": "691:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -661,13 +622,52 @@
               },
               {
                 "constant": false,
+                "id": 2548,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "723:9:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2549,
+                "src": "715:17:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2547,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "715:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Vote",
+            "nameLocation": "633:4:15",
+            "nodeType": "StructDefinition",
+            "scope": 2557,
+            "src": "626:113:15",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Lib.Stake",
+            "id": 2556,
+            "members": [
+              {
+                "constant": false,
                 "id": 2551,
                 "mutability": "mutable",
-                "name": "amount",
-                "nameLocation": "768:6:15",
+                "name": "id",
+                "nameLocation": "776:2:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "760:14:15",
+                "scope": 2556,
+                "src": "768:10:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -678,7 +678,7 @@
                   "id": 2550,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "760:7:15",
+                  "src": "768:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -690,11 +690,11 @@
                 "constant": false,
                 "id": 2553,
                 "mutability": "mutable",
-                "name": "timestamp",
-                "nameLocation": "792:9:15",
+                "name": "amount",
+                "nameLocation": "796:6:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "784:17:15",
+                "scope": 2556,
+                "src": "788:14:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -705,7 +705,34 @@
                   "id": 2552,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "784:7:15",
+                  "src": "788:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 2555,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "820:9:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2556,
+                "src": "812:17:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2554,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "812:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -715,27 +742,27 @@
               }
             ],
             "name": "Stake",
-            "nameLocation": "724:5:15",
+            "nameLocation": "752:5:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "717:91:15",
+            "scope": 2557,
+            "src": "745:91:15",
             "visibility": "public"
           }
         ],
-        "scope": 2556,
-        "src": "57:758:15"
+        "scope": 2558,
+        "src": "57:786:15"
       }
     ],
-    "src": "32:783:15"
+    "src": "32:811:15"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/Library.sol",
     "exportedSymbols": {
       "Lib": [
-        2555
+        2557
       ]
     },
-    "id": 2556,
+    "id": 2558,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -756,9 +783,9 @@
         "contractDependencies": [],
         "contractKind": "library",
         "fullyImplemented": true,
-        "id": 2555,
+        "id": 2557,
         "linearizedBaseContracts": [
-          2555
+          2557
         ],
         "name": "Lib",
         "nameLocation": "65:3:15",
@@ -884,7 +911,7 @@
             "name": "Multihash",
             "nameLocation": "135:9:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
+            "scope": 2557,
             "src": "128:95:15",
             "visibility": "public"
           },
@@ -1100,13 +1127,13 @@
             "name": "Onnanoco",
             "nameLocation": "240:8:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
+            "scope": 2557,
             "src": "233:207:15",
             "visibility": "public"
           },
           {
             "canonicalName": "Lib.Round",
-            "id": 2538,
+            "id": 2540,
             "members": [
               {
                 "constant": false,
@@ -1115,7 +1142,7 @@
                 "name": "onnanocoId",
                 "nameLocation": "477:10:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "469:18:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1142,7 +1169,7 @@
                 "name": "totalDefenseAmount",
                 "nameLocation": "505:18:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "497:26:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1169,7 +1196,7 @@
                 "name": "totalAttackAmount",
                 "nameLocation": "541:17:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "533:25:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1196,7 +1223,7 @@
                 "name": "timestamp",
                 "nameLocation": "576:9:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2538,
+                "scope": 2540,
                 "src": "568:17:15",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1215,28 +1242,16 @@
                   }
                 },
                 "visibility": "internal"
-              }
-            ],
-            "name": "Round",
-            "nameLocation": "453:5:15",
-            "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "446:146:15",
-            "visibility": "public"
-          },
-          {
-            "canonicalName": "Lib.Vote",
-            "id": 2547,
-            "members": [
+              },
               {
                 "constant": false,
-                "id": 2540,
+                "id": 2539,
                 "mutability": "mutable",
-                "name": "id",
-                "nameLocation": "628:2:15",
+                "name": "totalVotes",
+                "nameLocation": "603:10:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "620:10:15",
+                "scope": 2540,
+                "src": "595:18:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1244,10 +1259,49 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 2539,
+                  "id": 2538,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "620:7:15",
+                  "src": "595:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Round",
+            "nameLocation": "453:5:15",
+            "nodeType": "StructDefinition",
+            "scope": 2557,
+            "src": "446:174:15",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Lib.Vote",
+            "id": 2549,
+            "members": [
+              {
+                "constant": false,
+                "id": 2542,
+                "mutability": "mutable",
+                "name": "id",
+                "nameLocation": "656:2:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2549,
+                "src": "648:10:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2541,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "648:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1257,13 +1311,13 @@
               },
               {
                 "constant": false,
-                "id": 2542,
+                "id": 2544,
                 "mutability": "mutable",
                 "name": "voter",
-                "nameLocation": "648:5:15",
+                "nameLocation": "676:5:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "640:13:15",
+                "scope": 2549,
+                "src": "668:13:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1271,10 +1325,10 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 2541,
+                  "id": 2543,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "640:7:15",
+                  "src": "668:7:15",
                   "stateMutability": "nonpayable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address",
@@ -1285,40 +1339,13 @@
               },
               {
                 "constant": false,
-                "id": 2544,
-                "mutability": "mutable",
-                "name": "amount",
-                "nameLocation": "671:6:15",
-                "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "663:14:15",
-                "stateVariable": false,
-                "storageLocation": "default",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_uint256",
-                  "typeString": "uint256"
-                },
-                "typeName": {
-                  "id": 2543,
-                  "name": "uint256",
-                  "nodeType": "ElementaryTypeName",
-                  "src": "663:7:15",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  }
-                },
-                "visibility": "internal"
-              },
-              {
-                "constant": false,
                 "id": 2546,
                 "mutability": "mutable",
-                "name": "timestamp",
-                "nameLocation": "695:9:15",
+                "name": "amount",
+                "nameLocation": "699:6:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2547,
-                "src": "687:17:15",
+                "scope": 2549,
+                "src": "691:14:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1329,46 +1356,7 @@
                   "id": 2545,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "687:7:15",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  }
-                },
-                "visibility": "internal"
-              }
-            ],
-            "name": "Vote",
-            "nameLocation": "605:4:15",
-            "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "598:113:15",
-            "visibility": "public"
-          },
-          {
-            "canonicalName": "Lib.Stake",
-            "id": 2554,
-            "members": [
-              {
-                "constant": false,
-                "id": 2549,
-                "mutability": "mutable",
-                "name": "id",
-                "nameLocation": "748:2:15",
-                "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "740:10:15",
-                "stateVariable": false,
-                "storageLocation": "default",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_uint256",
-                  "typeString": "uint256"
-                },
-                "typeName": {
-                  "id": 2548,
-                  "name": "uint256",
-                  "nodeType": "ElementaryTypeName",
-                  "src": "740:7:15",
+                  "src": "691:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1378,13 +1366,52 @@
               },
               {
                 "constant": false,
+                "id": 2548,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "723:9:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2549,
+                "src": "715:17:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2547,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "715:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Vote",
+            "nameLocation": "633:4:15",
+            "nodeType": "StructDefinition",
+            "scope": 2557,
+            "src": "626:113:15",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Lib.Stake",
+            "id": 2556,
+            "members": [
+              {
+                "constant": false,
                 "id": 2551,
                 "mutability": "mutable",
-                "name": "amount",
-                "nameLocation": "768:6:15",
+                "name": "id",
+                "nameLocation": "776:2:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "760:14:15",
+                "scope": 2556,
+                "src": "768:10:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1395,7 +1422,7 @@
                   "id": 2550,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "760:7:15",
+                  "src": "768:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1407,11 +1434,11 @@
                 "constant": false,
                 "id": 2553,
                 "mutability": "mutable",
-                "name": "timestamp",
-                "nameLocation": "792:9:15",
+                "name": "amount",
+                "nameLocation": "796:6:15",
                 "nodeType": "VariableDeclaration",
-                "scope": 2554,
-                "src": "784:17:15",
+                "scope": 2556,
+                "src": "788:14:15",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -1422,7 +1449,34 @@
                   "id": 2552,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "784:7:15",
+                  "src": "788:7:15",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 2555,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "820:9:15",
+                "nodeType": "VariableDeclaration",
+                "scope": 2556,
+                "src": "812:17:15",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 2554,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "812:7:15",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -1432,18 +1486,18 @@
               }
             ],
             "name": "Stake",
-            "nameLocation": "724:5:15",
+            "nameLocation": "752:5:15",
             "nodeType": "StructDefinition",
-            "scope": 2555,
-            "src": "717:91:15",
+            "scope": 2557,
+            "src": "745:91:15",
             "visibility": "public"
           }
         ],
-        "scope": 2556,
-        "src": "57:758:15"
+        "scope": 2558,
+        "src": "57:786:15"
       }
     ],
-    "src": "32:783:15"
+    "src": "32:811:15"
   },
   "compiler": {
     "name": "solc",
@@ -1451,7 +1505,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-01-27T20:10:03.360Z",
+  "updatedAt": "2022-01-28T20:49:59.421Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
