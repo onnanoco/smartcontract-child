@@ -164,13 +164,16 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             onnanoco.status = Lib.Status.NORMAL;
 
             // new round
-            rounds[totalRounds] = Lib.Round(round.onnanocoId, 0, 0, 0, 0);
+            rounds[totalRounds] = Lib.Round(round.onnanocoId, 0, 0, 0, 1);
+            onnanoco.roundId = totalRounds;
 
+            // new vote
             Lib.Vote memory vote = defenseVotes[roundId][0];
 
             Lib.Vote memory newVote = Lib.Vote(round.onnanocoId, vote.voter, vote.amount, block.timestamp);
             defenseVotes[totalRounds].push(newVote);
 
+            // increase roundId
             totalRounds++;
         }
         
@@ -192,20 +195,11 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         if (round.totalAttackAmount > round.totalDefenseAmount) {
             
-            attackVotes[roundId][voteId].voter = address(0);
+            _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
 
-            if (voteId > 0) { 
-                _mint(_msgSender(), totalAmount * vote.amount / round.totalAttackAmount);
-                
-            } else { // Change 1st atttacker to next defender
-
-                rounds[roundId].totalVotes++;
-                // [TODO]
-            }
-
-        } else {
-            attackVotes[roundId][voteId].voter = address(0);
         }
+
+        attackVotes[roundId][voteId].voter = address(0);
 
     }
 
@@ -224,21 +218,19 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         uint256 totalAmount = round.totalAttackAmount + round.totalDefenseAmount;
 
         if (round.totalAttackAmount < round.totalDefenseAmount) {
-            defenseVotes[roundId][voteId].voter = address(0);
 
             if (voteId > 0) {
 
                 _mint(_msgSender(), totalAmount * vote.amount / round.totalDefenseAmount);
 
-            } else { // Next defender is previous defender
+            } else { // 1st defender
 
-                rounds[roundId].totalVotes++;
-                // [TODO]
+                _mint(_msgSender(), (totalAmount * vote.amount / round.totalDefenseAmount) - vote.amount);
             }
 
-        } else {
-            defenseVotes[roundId][voteId].voter = address(0);
         }
+
+        defenseVotes[roundId][voteId].voter = address(0);
     }
     
     // Stake MOE
