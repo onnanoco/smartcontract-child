@@ -49,7 +49,6 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         totalRounds++;
     }
 
-    // Get minimum attack amount
     function getMinimumAttackAmount(uint256 id) public view returns (uint256 amount) {
 
         if (id >= totalOnnanocos) {
@@ -63,9 +62,11 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             return 0;
         }
 
-        uint256 minimumAmount = ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalAttackAmount * 3);
-
-        return minimumAmount;
+        if (((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) > (roundInfo.totalAttackAmount * 3)) {
+            return ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalAttackAmount * 3);
+        } else {
+            return 0;
+        }
     }
 
     // [TODO] error
