@@ -55,12 +55,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             return 0;
         }
 
-        uint256 roundId = onnanocos[id].roundId;
-        Lib.Round memory roundInfo = rounds[roundId];
-
-        if (roundInfo.timestamp == 0) {
+        if (onnanocos[id].status == Lib.Status.DEPRECATED) {
             return 0;
         }
+
+        uint256 roundId = onnanocos[id].roundId;
+        Lib.Round memory roundInfo = rounds[roundId];
 
         if (((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) > (roundInfo.totalAttackAmount * 3)) {
             return ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalAttackAmount * 3);
@@ -69,7 +69,6 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         }
     }
 
-    // [TODO] error
     function voteForAttack(uint256 id, uint256 amount) public {
 
         require(id < totalOnnanocos, 'Invalid id');
@@ -110,16 +109,18 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             return 0;
         }
 
-        uint256 roundId = onnanocos[id].roundId;
-        Lib.Round memory roundInfo = rounds[roundId];
-
-        if (roundInfo.timestamp == 0) {
+        if (onnanocos[id].status != Lib.Status.IN_DISPUTE) {
             return 0;
         }
 
-        uint256 minimumAmount = ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalDefenseAmount * 3);
+        uint256 roundId = onnanocos[id].roundId;
+        Lib.Round memory roundInfo = rounds[roundId];
 
-        return minimumAmount;
+        if (((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) > (roundInfo.totalDefenseAmount * 3)) {
+            return ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalDefenseAmount * 3);
+        } else {
+            return 0;
+        }
     }
 
     function voteForDefense(uint256 id, uint256 amount) public {
@@ -253,71 +254,74 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         require(stakeInfo.timestamp > 0, 'Invalid stakeId');
         require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'Round is in dispute status');
         
-        uint256 duration = block.timestamp - stakeInfo.timestamp;
+        (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
 
-        //require(duration > 60 * 60 * 24 * 50, 'Minimum duration is 50 days'); // Deploy
+        //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
         require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
-
-        uint256 reward = getStakeRewardAmount(_msgSender(), stakeId);
 
         _mint(_msgSender(), stakeInfo.amount + reward);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
         delete stakes[_msgSender()][stakeId];
     }
 
-    function getStakeRewardAmount(address staker, uint256 stakeId) public view returns(uint256) {
+    function getStakeRewardAmount(address staker, uint256 stakeId) public view returns(uint256 amount, uint256 duration) {
 
         Lib.Stake memory stakeInfo = stakes[staker][stakeId];
 
-        uint256 duration = block.timestamp - stakeInfo.timestamp;
-        uint256 reward = stakeInfo.amount * duration / (60 * 60 * 24 * 100);
+        duration = block.timestamp - stakeInfo.timestamp;
+        amount = stakeInfo.amount * duration / (60 * 60 * 24 * 100);
 
         if (onnanocos[stakeInfo.id].status != Lib.Status.NORMAL) {
-            return 0;
+            return (0, 0);
         }
 
-        return reward;
+        return (amount, duration);
     }
 
     function receiveStakeReward(uint256 stakeId) public {
 
-        uint256 reward = getStakeRewardAmount(_msgSender(), stakeId);
+        (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
 
         require(reward > 0, 'Reward must greater than 0');
+        //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
 
         stakes[_msgSender()][stakeId].timestamp = block.timestamp;
         _mint(_msgSender(), reward);
     }
 
-    function getOwnerRewardAmount(uint256 id) public view returns(uint256){
+    function getOwnerRewardAmount(uint256 id) public view returns(uint256 amount, uint256 duration){
 
         Lib.Onnanoco memory onnanocoInfo = onnanocos[id];
         
         if (onnanocoInfo.timestamp == 0) {
-            return 0;
+            return (0, 0);
         }
 
         if (onnanocoInfo.status != Lib.Status.NORMAL) {
-            return 0;
+            return (0, 0);
         }
 
         Lib.Vote memory voteInfo = defenseVotes[onnanocoInfo.roundId][0];
 
         if (voteInfo.timestamp == 0) { // voteInfo is empty
-            return 0;
+            return (0, 0);
         }
 
-        uint256 duration = block.timestamp - voteInfo.timestamp;
-        uint256 reward = voteInfo.amount * duration / (60 * 60 * 24 * 50);
+        duration = block.timestamp - voteInfo.timestamp;
+        amount = voteInfo.amount * duration / (60 * 60 * 24 * 50);
 
-        return reward;
+        return (amount, duration);
     }
 
     function receiveOwnerReward(uint256 id) public {
         
         require(defenseVotes[onnanocos[id].roundId][0].voter == _msgSender(), 'Permission denied');
 
-        uint256 reward = getOwnerRewardAmount(id);
+        (uint256 reward, uint256 duration) = getOwnerRewardAmount(id);
+        //require(duration > 60 * 60 * 24 * 50, 'Minimum duration is 50 days'); // Deploy
+        require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
+
         require(reward > 0, 'Reward must greater than 0');
 
         _mint(_msgSender(), reward);
