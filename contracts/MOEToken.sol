@@ -69,7 +69,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         }
     }
 
-    function voteForAttack(uint256 id, uint256 amount) public {
+    function attack(uint256 id, uint256 amount) public {
 
         require(id < totalOnnanocos, 'Invalid id');
         require(amount > 0, 'Cannot vote with 0 MOE');
@@ -123,7 +123,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         }
     }
 
-    function voteForDefense(uint256 id, uint256 amount) public {
+    function defense(uint256 id, uint256 amount) public {
 
         require(id < totalOnnanocos, 'Invalid id');
         require(amount > 0, 'Cannot vote with 0');
