@@ -34,8 +34,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     mapping(address => Lib.Stake[]) public stakes;
 
     // Add onnanoco data
-    function addOnnanoco(string memory name, bytes32 hash, bytes2 hashFunction, uint8 hashSize, uint256 amount) public {
-  
+    function add(string memory name, bytes32 hash, bytes2 hashFunction, uint8 hashSize, uint256 amount) public {
+        
+        require(amount > 0, 'MOE: amount cannot be zero');
+
         _burn(_msgSender(), amount);
 
         onnanocos[totalOnnanocos] = Lib.Onnanoco(name, _msgSender(), Lib.Multihash(hash, hashFunction, hashSize), Lib.Status.NORMAL, block.timestamp, 0, totalRounds);
@@ -51,13 +53,8 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function getMinimumAttackAmount(uint256 id) public view returns (uint256 amount) {
 
-        if (id >= totalOnnanocos) {
-            return 0;
-        }
-
-        if (onnanocos[id].status == Lib.Status.DEPRECATED) {
-            return 0;
-        }
+        require(id < totalOnnanocos, 'MOE: no data available');
+        require(onnanocos[id].status != Lib.Status.DEPRECATED, 'MOE: deprecated data');
 
         uint256 roundId = onnanocos[id].roundId;
         Lib.Round memory roundInfo = rounds[roundId];
@@ -71,12 +68,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function attack(uint256 id, uint256 amount) public {
 
-        require(id < totalOnnanocos, 'Invalid id');
-        require(amount > 0, 'Cannot vote with 0 MOE');
-        require(onnanocos[id].status != Lib.Status.DEPRECATED, 'Deprecated');
+        require(amount > 0, 'MOE: amount cannot be zero');
         
         uint256 minimumAmount = getMinimumAttackAmount(id);
-        require(amount >= minimumAmount, 'Less than MIN attack amount');
+        require(amount >= minimumAmount, 'MOE: less than minimum amount');
 
         uint256 roundId = onnanocos[id].roundId;
 
@@ -89,11 +84,11 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         } else {
             
             Lib.Round memory roundInfo = rounds[roundId];
-            require(roundInfo.timestamp > 0, 'Round is empty');
+            require(roundInfo.timestamp > 0, 'MOE: no data available');
 
             uint256 duration = block.timestamp - roundInfo.timestamp;
-            //require(duration < 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
-            require(duration < 60 * 60, 'Dispute window is 1 hour'); // dev
+            //require(duration < 60 * 60 * 24 * 7, 'MOE: round is not in dispute'); // deploy
+            require(duration < 60 * 60, 'MOE: round is not in dispute'); // dev
         }
 
         _burn(_msgSender(), amount);
@@ -105,16 +100,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function getMinimumDefenseAmount(uint256 id) public view returns (uint256 amount) {
 
-        if (id >= totalOnnanocos) {
-            return 0;
-        }
-
-        if (onnanocos[id].status != Lib.Status.IN_DISPUTE) {
-            return 0;
-        }
+        require (id < totalOnnanocos, 'MOE: no data available');
+        require (onnanocos[id].status == Lib.Status.IN_DISPUTE, 'MOE: round is not in dispute');
 
         uint256 roundId = onnanocos[id].roundId;
         Lib.Round memory roundInfo = rounds[roundId];
+        require(roundInfo.timestamp > 0, 'MOE: no data available');
 
         if (((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) > (roundInfo.totalDefenseAmount * 3)) {
             return ((roundInfo.totalDefenseAmount + roundInfo.totalAttackAmount) * 2) - (roundInfo.totalDefenseAmount * 3);
@@ -125,20 +116,17 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function defense(uint256 id, uint256 amount) public {
 
-        require(id < totalOnnanocos, 'Invalid id');
-        require(amount > 0, 'Cannot vote with 0');
-        require(onnanocos[id].status == Lib.Status.IN_DISPUTE, 'Round is not in dispute');
+        require(amount > 0, 'MOE: amount cannot be zero');
 
         uint256 roundId = onnanocos[id].roundId;
         Lib.Round memory roundInfo = rounds[roundId];
-        require(roundInfo.timestamp > 0, 'Round is empty');
 
         uint256 minimumAmount = getMinimumDefenseAmount(id);
-        require(amount >= minimumAmount, 'Less than MIN defense amount');
+        require(amount >= minimumAmount, 'MOE: less than minimum amount');
 
         uint256 duration = block.timestamp - roundInfo.timestamp;
-        //require(duration < 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
-        require(duration < 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
+        //require(duration < 60 * 60 * 24 * 7, 'MOE: round is not in dispute'); // deploy
+        require(duration < 60 * 60 * 1, 'MOE: round is not in dispute'); // dev
 
         _burn(_msgSender(), amount);
         defenseVotes[roundId].push(Lib.Vote(id, _msgSender(), amount, block.timestamp));
@@ -150,15 +138,16 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     function clearRound(uint256 roundId) public {
 
         Lib.Round memory roundInfo = rounds[roundId];
-        require(roundInfo.timestamp > 0, 'Invalid roundId');
+        require(roundInfo.timestamp > 0, 'MOE: no data available');
 
         Lib.Onnanoco storage onnanoco = onnanocos[roundInfo.onnanocoId];
-        require(onnanoco.roundId == roundId, 'Invalid roundId');
+        require(onnanoco.roundId == roundId, 'MOE: no data available');
+        require(onnanoco.status == Lib.Status.IN_DISPUTE, 'MOE: round is not in dispute');
 
         uint256 duration = block.timestamp - roundInfo.timestamp;
 
-        //require(duration > 60 * 60 * 24 * 7, 'Dispute window is not over'); // deploy
-        require(duration > 60 * 60 * 1, 'Dispute window is not over'); // dev
+        //require(duration > 60 * 60 * 24 * 7, 'MOE: dispute window is not over'); // deploy
+        require(duration > 60 * 60 * 1, 'MOE: dispute window is not over'); // dev
 
         if (roundInfo.totalAttackAmount > roundInfo.totalDefenseAmount) { // Attackers win
             _mint(_msgSender(), roundInfo.totalAttackAmount / 100 * 1);
@@ -168,12 +157,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
             _mint(_msgSender(), roundInfo.totalDefenseAmount / 100 * 1);
             onnanoco.status = Lib.Status.NORMAL;
 
-            // new round
-            rounds[totalRounds] = Lib.Round(roundInfo.onnanocoId, 0, 0, 0, 1);
-            onnanoco.roundId = totalRounds;
-
-            // new vote
+            // 1st defender
             Lib.Vote memory vote = defenseVotes[roundId][0];
+
+            // new round
+            rounds[totalRounds] = Lib.Round(roundInfo.onnanocoId, vote.amount, 0, 0, 1);
+            onnanoco.roundId = totalRounds;
 
             Lib.Vote memory newVote = Lib.Vote(roundInfo.onnanocoId, vote.voter, vote.amount, block.timestamp);
             defenseVotes[totalRounds].push(newVote);
@@ -187,16 +176,16 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     function resolveAttack(uint256 roundId, uint256 voteId) public {
 
         Lib.Vote memory voteInfo = attackVotes[roundId][voteId];
-        require(voteInfo.timestamp > 0, 'Invalid voteId');
-        require(_msgSender() == voteInfo.voter, 'Access denied');
+        require(voteInfo.timestamp > 0, 'MOE: no data available');
+        require(_msgSender() == voteInfo.voter, 'MOE: access denied');
 
         Lib.Round memory roundInfo = rounds[roundId];
-        require(roundInfo.timestamp > 0, 'Invalid roundId');
+        require(roundInfo.timestamp > 0, 'MOE: no data available');
         
         uint256 duration = block.timestamp - roundInfo.timestamp;
 
-        //require(duration > 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
-        require(duration > 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
+        //require(duration > 60 * 60 * 24 * 7, 'MOE: dispute window is not over'); // deploy
+        require(duration > 60 * 60 * 1, 'MOE: dispute window is not over'); // dev
 
         uint256 totalAmount = roundInfo.totalAttackAmount + roundInfo.totalDefenseAmount;
 
@@ -210,16 +199,16 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     function resolveDefense(uint256 roundId, uint256 voteId) public {
 
         Lib.Vote memory voteInfo = defenseVotes[roundId][voteId];
-        require(voteInfo.timestamp > 0, 'Invalid voteId');
-        require(_msgSender() == voteInfo.voter, 'Access denied');
+        require(voteInfo.timestamp > 0, 'MOE: no data available');
+        require(_msgSender() == voteInfo.voter, 'MOE" access denied');
 
         Lib.Round memory roundInfo = rounds[roundId];
-        require(roundInfo.timestamp > 0, 'Invalid roundId');
+        require(roundInfo.timestamp > 0, 'MOE: no data available');
         
         uint256 duration = block.timestamp - roundInfo.timestamp;
 
-        //require(duration > 60 * 60 * 24 * 7, 'Dispute window is 7 days'); // deploy
-        require(duration > 60 * 60 * 1, 'Dispute window is 1 hour'); // dev
+        //require(duration > 60 * 60 * 24 * 7, 'MOE: dispute window is not over'); // deploy
+        require(duration > 60 * 60 * 1, 'MOE: dispute window is not over'); // dev
 
         uint256 totalAmount = roundInfo.totalAttackAmount + roundInfo.totalDefenseAmount;
 
