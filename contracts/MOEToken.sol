@@ -226,9 +226,9 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     
     function stake(uint256 id, uint256 amount) public {
     
-        require(amount > 0, 'Cannot stake 0');
-        require(id < totalOnnanocos, 'Character data is empty');
-        require(onnanocos[id].status == Lib.Status.NORMAL, 'Round is not in normal status');
+        require(amount > 0, 'MOE: amount cannot be zero');
+        require(id < totalOnnanocos, 'MOE: no data available');
+        require(onnanocos[id].status == Lib.Status.NORMAL, 'MOE: round is not in normal status');
 
         _burn(_msgSender(), amount);
 
@@ -240,13 +240,13 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
         
-        require(stakeInfo.timestamp > 0, 'Invalid stakeId');
-        require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'Round is in dispute status');
+        require(stakeInfo.timestamp > 0, 'MOE: no data available');
+        require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'MOE: round is in dispute status');
         
         (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
 
-        //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
-        require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
+        //require(duration > 60 * 60 * 24 * 100, 'MOE: request can be made after at least 100 days'); // Deploy
+        require(duration > 60 * 60 * 1, 'MOE: request can be made after at least 1 hour'); // Test
 
         _mint(_msgSender(), stakeInfo.amount + reward);
         onnanocos[stakeInfo.id].totalStakingAmount -= stakeInfo.amount;
@@ -256,6 +256,8 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     function getStakeRewardAmount(address staker, uint256 stakeId) public view returns(uint256 amount, uint256 duration) {
 
         Lib.Stake memory stakeInfo = stakes[staker][stakeId];
+
+        require(stakeInfo.timestamp > 0, 'MOE: no data available');
 
         duration = block.timestamp - stakeInfo.timestamp;
         amount = stakeInfo.amount * duration / (60 * 60 * 24 * 100);
@@ -271,9 +273,9 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
 
-        require(reward > 0, 'Reward must greater than 0');
-        //require(duration > 60 * 60 * 24 * 100, 'Minimum duration is 100 days'); // Deploy
-        require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
+        require(reward > 0, 'MOE: reward must greater than 0');
+        //require(duration > 60 * 60 * 24 * 100, 'MOE: request can be made after at least 100 days'); // Deploy
+        require(duration > 60 * 60 * 1, 'MOE: request can be made after at least 1 hour'); // Test
 
         stakes[_msgSender()][stakeId].timestamp = block.timestamp;
         _mint(_msgSender(), reward);
@@ -283,19 +285,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
         Lib.Onnanoco memory onnanocoInfo = onnanocos[id];
         
-        if (onnanocoInfo.timestamp == 0) {
-            return (0, 0);
-        }
-
-        if (onnanocoInfo.status != Lib.Status.NORMAL) {
-            return (0, 0);
-        }
+        require(onnanocoInfo.timestamp > 0, 'MOE: no data available');
+        require(onnanocoInfo.status == Lib.Status.NORMAL, 'MOE: round is not in normal status');
 
         Lib.Vote memory voteInfo = defenseVotes[onnanocoInfo.roundId][0];
 
-        if (voteInfo.timestamp == 0) { // voteInfo is empty
-            return (0, 0);
-        }
+        require(voteInfo.timestamp > 0, 'MOE: no data available');
 
         duration = block.timestamp - voteInfo.timestamp;
         amount = voteInfo.amount * duration / (60 * 60 * 24 * 50);
@@ -305,13 +300,13 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function receiveOwnerReward(uint256 id) public {
         
-        require(defenseVotes[onnanocos[id].roundId][0].voter == _msgSender(), 'Permission denied');
+        require(defenseVotes[onnanocos[id].roundId][0].voter == _msgSender(), 'MOE: access denied');
 
         (uint256 reward, uint256 duration) = getOwnerRewardAmount(id);
-        //require(duration > 60 * 60 * 24 * 50, 'Minimum duration is 50 days'); // Deploy
-        require(duration > 60 * 60 * 1, 'Minimum duration is 1 hour'); // Test
+        //require(duration > 60 * 60 * 24 * 50, 'MOE: request can be made after at least 50 days'); // Deploy
+        require(duration > 60 * 60 * 1, 'MOE: request can be made after at least 1 hour'); // Test
 
-        require(reward > 0, 'Reward must greater than 0');
+        require(reward > 0, 'MOE: reward must greater than 0');
 
         _mint(_msgSender(), reward);
         defenseVotes[onnanocos[id].roundId][0].timestamp = block.timestamp;
