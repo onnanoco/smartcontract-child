@@ -176,6 +176,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     function resolveAttack(uint256 roundId, uint256 voteId) public {
 
         require(roundId < totalRounds, 'MOE: no data available');
+        require(voteId < attackVotes[roundId].length, 'MOE: no data available');
 
         Lib.Vote memory voteInfo = attackVotes[roundId][voteId];
         require(voteInfo.amount > 0, 'MOE: no data available');
@@ -198,10 +199,11 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         attackVotes[roundId][voteId].voter = address(0);
     }
 
-    function reolveDefense(uint256 roundId, uint256 voteId) public {
+    function resolveDefense(uint256 roundId, uint256 voteId) public {
 
         require(roundId < totalRounds, 'MOE: no data available');
-        
+        require(voteId < defenseVotes[roundId].length, 'MOE: no data available');
+
         Lib.Vote memory voteInfo = defenseVotes[roundId][voteId];
         require(voteInfo.amount > 0, 'MOE: no data available');
         require(_msgSender() == voteInfo.voter, 'MOE: access denied');
@@ -242,9 +244,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     
     function unstake(uint256 stakeId) public {
 
+        require(stakes[_msgSender()].length > stakeId, 'MOE: no data available');
+
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
         
-        require(stakeInfo.timestamp > 0, 'MOE: no data available');
         require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'MOE: round is in dispute status');
         
         (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
