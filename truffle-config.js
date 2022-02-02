@@ -22,7 +22,7 @@ module.exports = {
       provider: () => new HDWalletProvider(mnemonic, infuraMumbaiRPC),
       network_id: 80001,
       gas: 6000000,
-      gasPrice: 3000000000,
+      gasPrice: 4000000000,
       confirmations: 2,
       timeoutBlocks: 300,
      // skipDryRun: true
