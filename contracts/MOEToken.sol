@@ -173,7 +173,9 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         
     }
 
-    function receiveAttackReward(uint256 roundId, uint256 voteId) public {
+    function resolveAttack(uint256 roundId, uint256 voteId) public {
+
+        require(roundId < totalRounds, 'MOE: no data available');
 
         Lib.Vote memory voteInfo = attackVotes[roundId][voteId];
         require(voteInfo.amount > 0, 'MOE: no data available');
@@ -196,8 +198,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         attackVotes[roundId][voteId].voter = address(0);
     }
 
-    function receiveDefenseReward(uint256 roundId, uint256 voteId) public {
+    function reolveDefense(uint256 roundId, uint256 voteId) public {
 
+        require(roundId < totalRounds, 'MOE: no data available');
+        
         Lib.Vote memory voteInfo = defenseVotes[roundId][voteId];
         require(voteInfo.amount > 0, 'MOE: no data available');
         require(_msgSender() == voteInfo.voter, 'MOE: access denied');
@@ -286,9 +290,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function getOwnerRewardAmount(uint256 id) public view returns(uint256 amount, uint256 duration){
 
+        require(id < totalOnnanocos, 'MOE: no data available');
+
         Lib.Onnanoco memory onnanocoInfo = onnanocos[id];
         
-        require(onnanocoInfo.timestamp > 0, 'MOE: no data available');
         require(onnanocoInfo.status == Lib.Status.NORMAL, 'MOE: round is not in normal status');
 
         Lib.Vote memory voteInfo = defenseVotes[onnanocoInfo.roundId][0];
@@ -303,9 +308,10 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
 
     function receiveOwnerReward(uint256 id) public {
         
+        (uint256 reward, uint256 duration) = getOwnerRewardAmount(id);
+
         require(onnanocos[id].owner == _msgSender(), 'MOE: access denied');
 
-        (uint256 reward, uint256 duration) = getOwnerRewardAmount(id);
         //require(duration > 60 * 60 * 24 * 50, 'MOE: request can be made after at least 50 days'); // Deploy
         require(duration > 60 * 60 * 1, 'MOE: request can be made after at least 1 hour'); // Test
 
