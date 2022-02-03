@@ -231,7 +231,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     
     function unstake(uint256 stakeId) public {
 
-        (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
+        (uint256 reward, uint256 duration) = getStakingRewardAmount(_msgSender(), stakeId);
 
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
         require(onnanocos[stakeInfo.id].status != Lib.Status.IN_DISPUTE, 'MOE: round is in dispute status');
@@ -248,7 +248,7 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         }
     }
 
-    function getStakeRewardAmount(address staker, uint256 stakeId) public view returns(uint256 amount, uint256 duration) {
+    function getStakingRewardAmount(address staker, uint256 stakeId) public view returns(uint256 amount, uint256 duration) {
 
         require(stakes[_msgSender()].length > stakeId, 'MOE: no staking data available');
 
@@ -264,12 +264,12 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
         return (amount, duration);
     }
 
-    function receiveStakeReward(uint256 stakeId) public {
+    function receiveStakingReward(uint256 stakeId) public {
 
-        (uint256 reward, uint256 duration) = getStakeRewardAmount(_msgSender(), stakeId);
+        (uint256 reward, uint256 duration) = getStakingRewardAmount(_msgSender(), stakeId);
 
         Lib.Stake memory stakeInfo = stakes[_msgSender()][stakeId];
-        require(onnanocos[stakeInfo.id].status != Lib.Status.NORMAL, 'MOE: round is not in normal status');
+        require(onnanocos[stakeInfo.id].status == Lib.Status.NORMAL, 'MOE: round is not in normal status');
 
         require(reward > 0, 'MOE: reward must greater than 0');
         //require(duration > 60 * 60 * 24 * 100, 'MOE: request can be made after at least 100 days'); // Deploy
