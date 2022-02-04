@@ -6,7 +6,7 @@ library Lib {
     enum Status { NORMAL, IN_DISPUTE, DEPRECATED }
 
     struct Multihash {
-        bytes32 hash;
+        bytes32 digest;
         bytes2 hashFunction;
         uint8 size;
     }
@@ -34,6 +34,7 @@ library Lib {
         address voter;
         uint256 amount;
         uint256 timestamp;
+        string evidence;
     }
 
     struct Stake {
