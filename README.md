@@ -74,7 +74,3 @@ module.exports = async function (deployer) {
 ```bash
 npx truffle migrate --network {NETWORK}
 ```
-
-## Testnet
-
-- Contract address: 0x5ea8EE79368116FE841eb57c678b583CCF4F5141
