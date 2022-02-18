@@ -295,9 +295,9 @@ contract MOEToken is ContextUpgradeable, AccessControlEnumerableUpgradeable, IMO
     }
 
     // Initializer
-    function initialize(string memory name, string memory symbol, address childchangeProxy) public virtual initializer {
+    function initialize(string memory name, string memory symbol, address childchaninProxy) public virtual initializer {
 
         __ERC20_init(name, symbol);
-        _setupRole(DEPOSITOR_ROLE, childchangeProxy);
+        _setupRole(DEPOSITOR_ROLE, childchaninProxy);
     }
 }

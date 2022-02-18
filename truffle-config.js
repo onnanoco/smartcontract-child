@@ -14,7 +14,7 @@ module.exports = {
       provider: () => new HDWalletProvider(mnemonic, infuraPolygonRPC),
       network_id: 137,
       gas: 6000000,
-      gasPrice: 50000000000, 
+      gasPrice: 60000000000, 
       confirmations: 2,
       timeoutBlocks: 300,
      // skipDryRun: true
